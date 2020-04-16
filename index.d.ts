@@ -120,11 +120,11 @@ declare namespace Replica {
 
     function Unregister(key: ReplicaRegistryKey): void
 
-    function WaitForRegistered<T>(key: ReplicaRegistryKey): Replicant<T>
-    function WaitForRegistered<T>(key: ReplicaRegistryKey, timeout: number): Replicant<T> | undefined
-    function WaitForRegistered<T>(key: ReplicaRegistryKey, timeout?: number): Replicant<T> | undefined
+    function WaitForRegistered<T extends Replica.Replicant<{[index: string]: any}>>(key: ReplicaRegistryKey): T
+    function WaitForRegistered<T extends Replica.Replicant<{[index: string]: any}>>(key: ReplicaRegistryKey, timeout: number): T | undefined
+    function WaitForRegistered<T extends Replica.Replicant<{[index: string]: any}>>(key: ReplicaRegistryKey, timeout?: number): T | undefined
 
-    function GetRegistered<T>(key: ReplicaRegistryKey): Replicant<T> | undefined
+    function GetRegistered<T extends Replica.Replicant<{[index: string]: any}>>(key: ReplicaRegistryKey): T | undefined
 
     const Deserialize: typeof Replicant.FromSerialized
     const ReplicantRegistered: Signal<(replicant: Replicant<{[index: string]: unknown}>, key: ReplicaRegistryKey) => void>
