@@ -28,8 +28,13 @@ type ReplicantContext = {
     registryKey: ReplicaRegistryKey
 }
 
+type _Array<T> = Array<T>
+type _Map<K, V> = Map<K, V>
+
 declare namespace Replica {
     abstract class Replicant<T extends {[index: string]: any} = {[index: string]: unknown}>{
+        constructor()
+        constructor(partialConfig?: Partial<ReplicaConfig>, context?: ReplicantContext)
         static FromSerialized(serialized: ReplicaSerializedValue, partialConfig?: Partial<ReplicaConfig>, context?: ReplicantContext): unknown
         /** Note: this is meant to be called by lua code, and does not interface well with TypeScript classes.
          * Consider using roblox-ts typings for lua code when extending the Replicant base class. */
@@ -51,9 +56,14 @@ declare namespace Replica {
         Inspect(maxDepth?: number): void
         MergeSerialized(serialized: ReplicaSerializedValue): void
         Destroy(): void
+
+        public WillUpdate: Signal<(isLocal: boolean) => void>
+        public OnUpdate: Signal<(isLocal: boolean) => void>
     }
 
     class Array<T extends {[index: number]: any} = {[index: number]: unknown}> extends Replicant<T> {
+        constructor(initialValues?: _Array<T[keyof T]>)
+        constructor(initialValues?: _Array<T[keyof T]>, partialConfig?: Partial<ReplicaConfig>, context?: ReplicantContext)
         static SerialType: 'ArrayReplicant'
         IndexOf(value: T[keyof T]): number
         Ipairs(): [<K extends keyof T>(object, number) => [K, T[K]], T, 0]
@@ -67,33 +77,44 @@ declare namespace Replica {
     }
 
     class Map<T extends {[index: string]: any} = {[index: string]: unknown}> extends Replicant<T> {
+        constructor(initialValues?: _Map<keyof T, T[keyof T]>)
+        constructor(initialValues?: _Map<keyof T, T[keyof T]>, partialConfig?: Partial<ReplicaConfig>, context?: ReplicantContext)
         static SerialType: 'MapReplicant'
         Pairs(): [<K extends keyof T>(object, number) => [K, T[K]], T]
     }
 
     class FactoredOr<T extends {[index: string]: true} = {[index: string]: true}> extends Replicant<T> {
+        constructor(initialValues?: _Map<keyof T, boolean>)
+        constructor(initialValues?: _Map<keyof T, boolean>, partialConfig?: Partial<ReplicaConfig>, context?: ReplicantContext)
         static SerialType: 'FactoredOrReplicant'
         Pairs(): [<K extends keyof T>(object, number) => [K, T[K]], T]
         ResolveState(): boolean
         Set<K extends keyof T>(key: K, value: boolean): void
         Reset(): void
         Toggle<K extends keyof T>(key: K): void
+        public StateChanged: Signal<(newState: boolean) => void>
     }
 
     class FactoredNor<T extends {[index: string]: true} = {[index: string]: true}> extends Replicant<T> {
+        constructor(initialValues?: _Map<keyof T, boolean>)
+        constructor(initialValues?: _Map<keyof T, boolean>, partialConfig?: Partial<ReplicaConfig>, context?: ReplicantContext)
         static SerialType: 'FactoredNorReplicant'
         Pairs(): [<K extends keyof T>(object, number) => [K, T[K]], T]
         ResolveState(): boolean
         Set<K extends keyof T>(key: K, value: boolean): void
         Reset(): void
         Toggle<K extends keyof T>(key: K): void
+        public StateChanged: Signal<(newState: boolean) => void>
     }
 
     class FactoredSum<T extends {[index: string]: number} = {[index: string]: number}> extends Replicant<T> {
+        constructor(initialValues?: _Map<keyof T, number>)
+        constructor(initialValues?: _Map<keyof T, number>, partialConfig?: Partial<ReplicaConfig>, context?: ReplicantContext)
         static SerialType: 'FactoredSumReplicant'
         Pairs(): [<K extends keyof T>(object, number) => [K, T[K]], T]
         ResolveState(): number
         Reset(): void
+        public StateChanged: Signal<(newState: boolean) => void>
     }
 
     function Register(key: ReplicaRegistryKey, replicant: Replica.Replicant): void
