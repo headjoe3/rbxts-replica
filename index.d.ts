@@ -29,7 +29,6 @@ type ReplicantContext = {
 }
 
 type _Array<T> = Array<T>
-type _Map<K, V> = Map<K, V>
 
 declare namespace Replica {
     abstract class Replicant<T extends {[index: string]: any} = {[index: string]: unknown}>{
@@ -77,15 +76,15 @@ declare namespace Replica {
     }
 
     class Map<T extends {[index: string]: any} = {[index: string]: unknown}> extends Replicant<T> {
-        constructor(initialValues?: _Map<keyof T, T[keyof T]>)
-        constructor(initialValues?: _Map<keyof T, T[keyof T]>, partialConfig?: Partial<ReplicaConfig>, context?: ReplicantContext)
+        constructor(initialValues?: Record<keyof T, T[keyof T]>)
+        constructor(initialValues?: Record<keyof T, T[keyof T]>, partialConfig?: Partial<ReplicaConfig>, context?: ReplicantContext)
         static SerialType: 'MapReplicant'
         Pairs(): [<K extends keyof T>(object, number) => [K, T[K]], T]
     }
 
     class FactoredOr<T extends {[index: string]: true} = {[index: string]: true}> extends Replicant<T> {
-        constructor(initialValues?: _Map<keyof T, boolean>)
-        constructor(initialValues?: _Map<keyof T, boolean>, partialConfig?: Partial<ReplicaConfig>, context?: ReplicantContext)
+        constructor(initialValues?: Record<keyof T, boolean>)
+        constructor(initialValues?: Record<keyof T, boolean>, partialConfig?: Partial<ReplicaConfig>, context?: ReplicantContext)
         static SerialType: 'FactoredOrReplicant'
         Pairs(): [<K extends keyof T>(object, number) => [K, T[K]], T]
         ResolveState(): boolean
@@ -96,8 +95,8 @@ declare namespace Replica {
     }
 
     class FactoredNor<T extends {[index: string]: true} = {[index: string]: true}> extends Replicant<T> {
-        constructor(initialValues?: _Map<keyof T, boolean>)
-        constructor(initialValues?: _Map<keyof T, boolean>, partialConfig?: Partial<ReplicaConfig>, context?: ReplicantContext)
+        constructor(initialValues?: Record<keyof T, boolean>)
+        constructor(initialValues?: Record<keyof T, boolean>, partialConfig?: Partial<ReplicaConfig>, context?: ReplicantContext)
         static SerialType: 'FactoredNorReplicant'
         Pairs(): [<K extends keyof T>(object, number) => [K, T[K]], T]
         ResolveState(): boolean
@@ -108,8 +107,8 @@ declare namespace Replica {
     }
 
     class FactoredSum<T extends {[index: string]: number} = {[index: string]: number}> extends Replicant<T> {
-        constructor(initialValues?: _Map<keyof T, number>)
-        constructor(initialValues?: _Map<keyof T, number>, partialConfig?: Partial<ReplicaConfig>, context?: ReplicantContext)
+        constructor(initialValues?: Record<keyof T, number>)
+        constructor(initialValues?: Record<keyof T, number>, partialConfig?: Partial<ReplicaConfig>, context?: ReplicantContext)
         static SerialType: 'FactoredSumReplicant'
         Pairs(): [<K extends keyof T>(object, number) => [K, T[K]], T]
         ResolveState(): number
