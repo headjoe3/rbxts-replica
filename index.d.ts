@@ -65,7 +65,7 @@ declare namespace Replica {
         constructor(initialValues?: _Array<T[keyof T]>, partialConfig?: Partial<ReplicaConfig>, context?: ReplicantContext)
         static SerialType: 'ArrayReplicant'
         IndexOf(value: T[keyof T]): number
-        Ipairs(): [<K extends keyof T>(object, number) => [K, T[K]], T, 0]
+        Ipairs(): [<K extends keyof T>(tab: object, idx: number) => [K, T[K]], T, 0]
         Size(): number
         Insert(value: T[keyof T]): void
         Insert(index: number, value: T[keyof T]): void
@@ -79,14 +79,14 @@ declare namespace Replica {
         constructor(initialValues?: Record<keyof T, T[keyof T]>)
         constructor(initialValues?: Record<keyof T, T[keyof T]>, partialConfig?: Partial<ReplicaConfig>, context?: ReplicantContext)
         static SerialType: 'MapReplicant'
-        Pairs(): [<K extends keyof T>(object, number) => [K, T[K]], T]
+        Pairs(): [<K extends keyof T>(tab: object, idx: number) => [K, T[K]], T]
     }
 
     class FactoredOr<T extends {[index: string]: true} = {[index: string]: true}> extends Replicant<T> {
         constructor(initialValues?: Record<keyof T, boolean>)
         constructor(initialValues?: Record<keyof T, boolean>, partialConfig?: Partial<ReplicaConfig>, context?: ReplicantContext)
         static SerialType: 'FactoredOrReplicant'
-        Pairs(): [<K extends keyof T>(object, number) => [K, T[K]], T]
+        Pairs(): [<K extends keyof T>(tab: object, idx: number) => [K, T[K]], T]
         ResolveState(): boolean
         Set<K extends keyof T>(key: K, value: boolean): void
         Reset(): void
@@ -98,7 +98,7 @@ declare namespace Replica {
         constructor(initialValues?: Record<keyof T, boolean>)
         constructor(initialValues?: Record<keyof T, boolean>, partialConfig?: Partial<ReplicaConfig>, context?: ReplicantContext)
         static SerialType: 'FactoredNorReplicant'
-        Pairs(): [<K extends keyof T>(object, number) => [K, T[K]], T]
+        Pairs(): [<K extends keyof T>(tab: object, idx: number) => [K, T[K]], T]
         ResolveState(): boolean
         Set<K extends keyof T>(key: K, value: boolean): void
         Reset(): void
@@ -110,7 +110,7 @@ declare namespace Replica {
         constructor(initialValues?: Record<keyof T, number>)
         constructor(initialValues?: Record<keyof T, number>, partialConfig?: Partial<ReplicaConfig>, context?: ReplicantContext)
         static SerialType: 'FactoredSumReplicant'
-        Pairs(): [<K extends keyof T>(object, number) => [K, T[K]], T]
+        Pairs(): [<K extends keyof T>(tab: object, idx: number) => [K, T[K]], T]
         ResolveState(): number
         Reset(): void
         public StateChanged: Signal<(newState: boolean) => void>
