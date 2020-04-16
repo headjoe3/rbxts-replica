@@ -1,6 +1,6 @@
 {
   "name": "@rbxts/replica",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Roblox-TS typings for Replica",
   "main": "lib/init.lua",
   "scripts": {
