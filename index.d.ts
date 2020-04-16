@@ -21,7 +21,7 @@ type ReplicaConfig = {
     Blacklist: Array<Player>
 }
 type ReplicantContext = {
-    base: Replica.Replicant
+    base: Replica.Replicant<{[index: string]: unknown}>
     keyPath: Array<string>
     config: ReplicaConfig
     active: boolean
@@ -31,7 +31,7 @@ type ReplicantContext = {
 type _Array<T> = Array<T>
 
 declare namespace Replica {
-    abstract class Replicant<T extends {[index: string]: any} = {[index: string]: unknown}>{
+    abstract class Replicant<T extends {[index: string]: any}>{
         constructor()
         constructor(partialConfig?: Partial<ReplicaConfig>, context?: ReplicantContext)
         static FromSerialized(serialized: ReplicaSerializedValue, partialConfig?: Partial<ReplicaConfig>, context?: ReplicantContext): unknown
@@ -60,7 +60,7 @@ declare namespace Replica {
         public OnUpdate: Signal<(isLocal: boolean) => void>
     }
 
-    class Array<T extends {[index: number]: any} = {[index: number]: unknown}> extends Replicant<T> {
+    class Array<T extends {[index: number]: any}> extends Replicant<T> {
         constructor(initialValues?: _Array<T[keyof T]>)
         constructor(initialValues?: _Array<T[keyof T]>, partialConfig?: Partial<ReplicaConfig>, context?: ReplicantContext)
         static SerialType: 'ArrayReplicant'
@@ -75,14 +75,14 @@ declare namespace Replica {
         Pop(): void
     }
 
-    class Map<T extends {[index: string]: any} = {[index: string]: unknown}> extends Replicant<T> {
+    class Map<T extends {[index: string]: any}> extends Replicant<T> {
         constructor(initialValues?: Record<keyof T, T[keyof T]>)
         constructor(initialValues?: Record<keyof T, T[keyof T]>, partialConfig?: Partial<ReplicaConfig>, context?: ReplicantContext)
         static SerialType: 'MapReplicant'
         Pairs(): [<K extends keyof T>(tab: object, idx: number) => [K, T[K]], T]
     }
 
-    class FactoredOr<T extends {[index: string]: true} = {[index: string]: true}> extends Replicant<T> {
+    class FactoredOr<T extends {[index: string]: true}> extends Replicant<T> {
         constructor(initialValues?: Record<keyof T, boolean>)
         constructor(initialValues?: Record<keyof T, boolean>, partialConfig?: Partial<ReplicaConfig>, context?: ReplicantContext)
         static SerialType: 'FactoredOrReplicant'
@@ -94,7 +94,7 @@ declare namespace Replica {
         public StateChanged: Signal<(newState: boolean) => void>
     }
 
-    class FactoredNor<T extends {[index: string]: true} = {[index: string]: true}> extends Replicant<T> {
+    class FactoredNor<T extends {[index: string]: true}> extends Replicant<T> {
         constructor(initialValues?: Record<keyof T, boolean>)
         constructor(initialValues?: Record<keyof T, boolean>, partialConfig?: Partial<ReplicaConfig>, context?: ReplicantContext)
         static SerialType: 'FactoredNorReplicant'
@@ -106,7 +106,7 @@ declare namespace Replica {
         public StateChanged: Signal<(newState: boolean) => void>
     }
 
-    class FactoredSum<T extends {[index: string]: number} = {[index: string]: number}> extends Replicant<T> {
+    class FactoredSum<T extends {[index: string]: number}> extends Replicant<T> {
         constructor(initialValues?: Record<keyof T, number>)
         constructor(initialValues?: Record<keyof T, number>, partialConfig?: Partial<ReplicaConfig>, context?: ReplicantContext)
         static SerialType: 'FactoredSumReplicant'
@@ -116,17 +116,17 @@ declare namespace Replica {
         public StateChanged: Signal<(newState: boolean) => void>
     }
 
-    function Register(key: ReplicaRegistryKey, replicant: Replica.Replicant): void
+    function Register(key: ReplicaRegistryKey, replicant: Replica.Replicant<{[index: string]: unknown}>): void
 
     function Unregister(key: ReplicaRegistryKey): void
 
-    function WaitForRegistered(key: ReplicaRegistryKey, timeout: number): Replicant
-    function WaitForRegistered(key: ReplicaRegistryKey, timeout: undefined): Replicant | undefined
+    function WaitForRegistered<T>(key: ReplicaRegistryKey, timeout: number): Replicant<T>
+    function WaitForRegistered<T>(key: ReplicaRegistryKey, timeout: undefined): Replicant<T> | undefined
 
-    function GetRegistered(key: ReplicaRegistryKey): Replicant | undefined
+    function GetRegistered<T>(key: ReplicaRegistryKey): Replicant<T> | undefined
 
     const Deserialize: typeof Replicant.FromSerialized
-    const ReplicantRegistered: Signal<(replicant: Replicant, key: ReplicaRegistryKey) => void>
-    const ReplicantWillRegister: Signal<(replicant: Replicant, key: ReplicaRegistryKey) => void>
-    const ReplicantUnregistered: Signal<(replicant: Replicant, key: ReplicaRegistryKey) => void>
+    const ReplicantRegistered: Signal<(replicant: Replicant<{[index: string]: unknown}>, key: ReplicaRegistryKey) => void>
+    const ReplicantWillRegister: Signal<(replicant: Replicant<{[index: string]: unknown}>, key: ReplicaRegistryKey) => void>
+    const ReplicantUnregistered: Signal<(replicant: Replicant<{[index: string]: unknown}>, key: ReplicaRegistryKey) => void>
 }
