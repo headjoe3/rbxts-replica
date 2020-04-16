@@ -120,8 +120,9 @@ declare namespace Replica {
 
     function Unregister(key: ReplicaRegistryKey): void
 
-    function WaitForRegistered<T>(key: ReplicaRegistryKey, timeout: number): Replicant<T>
-    function WaitForRegistered<T>(key: ReplicaRegistryKey, timeout: undefined): Replicant<T> | undefined
+    function WaitForRegistered<T>(key: ReplicaRegistryKey): Replicant<T>
+    function WaitForRegistered<T>(key: ReplicaRegistryKey, timeout: number): Replicant<T> | undefined
+    function WaitForRegistered<T>(key: ReplicaRegistryKey, timeout?: number): Replicant<T> | undefined
 
     function GetRegistered<T>(key: ReplicaRegistryKey): Replicant<T> | undefined
 
